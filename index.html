@@ -77,47 +77,86 @@
             'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
         let map = new mapboxgl.Map({
             container: 'map', // container ID
-            style: 'mapbox://styles/mapbox/dark-v10',
-            zoom: 12, // starting zoom
+            style: 'mapbox://styles/mapbox/light-v9',
+            zoom: 11, // starting zoom
             center: [-122.2559435, 47.6002614] // starting center
         });
 
         map.on('load', () => { //simplifying the function statement: arrow with brackets to define a function
 
-            map.addSource('uw-tiles', {
+
+
+            map.addSource('basemap-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/uw/{z}/{x}/{y}.png'
+                    'assets/basemap/basemap/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
-                'attribution': 'Map tiles designed by Bo Zhao</a>'
+                'attribution': 'Map tiles designed by Elaine Azul'
             });
 
-            map.addSource('lgbtq-tiles', {
+            map.addSource('thematic-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/lgbtq/{z}/{x}/{y}.png'
+                    'assets/thematic/thematic/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
-                'attribution': 'Map tiles designed by Bo Zhao'
+                'attribution': 'Map tiles designed by Elaine Azul'
+            });
+
+
+            map.addSource('hospital-tiles', {
+                'type': 'raster',
+                'tiles': [
+                    'assets/hospital/hospital/{z}/{x}/{y}.png'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles designed by Elaine Azul'
+            });
+
+            map.addSource('valentines-tiles', {
+                'type': 'raster',
+                'tiles': [
+                    'assets/valentines/valentines/{z}/{x}/{y}.png'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles designed by Elaine Azul'
             });
 
             map.addLayer({
-                'id': 'uw',
+                'id': 'thematic',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
                 },
-                'source': 'uw-tiles'
+                'source': 'thematic-tiles'
             });
 
             map.addLayer({
-                'id': 'lgbtq',
+                'id': 'basemap',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
                 },
-                'source': 'lgbtq-tiles'
+                'source': 'basemap-tiles'
+            });
+
+            map.addLayer({
+                'id': 'basemap + hospital',
+                'type': 'raster',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'source': 'hospital-tiles'
+            });
+
+            map.addLayer({
+                'id': 'valentines theme',
+                'type': 'raster',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'source': 'valentines-tiles'
             });
 
         });
@@ -126,12 +165,12 @@
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('uw') || !map.getLayer('lgbtq')) {
+            if (!map.getLayer('basemap') || !map.getLayer('basemap + hospital') || !map.getLayer('valentines theme') || !map.getLayer('thematic')) {
                 return;
             }
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['uw', 'lgbtq'];
+            const toggleableLayerIds = ['basemap', 'basemap + hospital', 'valentines theme', 'thematic'];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
